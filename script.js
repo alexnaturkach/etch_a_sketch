@@ -2,10 +2,11 @@ const container = document.getElementById('cont');
 const contSize = 60; //size of container in pixels
 let size = 16; //number of columns and rows
 let mouseDown = false;
-let randomColor =
+let drawingMethod = drawBlack;
+let colorPick = document.getElementById("colorPicker");
+let currentColor = colorPick.value;
+generateGrid();
 
-
-  generateGrid();
 
 function getRandomColor() {
   let letter = '0123456789ABCDEF';
@@ -18,8 +19,8 @@ function getRandomColor() {
 
 function drawBlack(e) {
   if (mouseDown) {
-    if (e.target.className === 'cell') {
-      e.target.style.backgroundColor = 'black';
+    if (e.target.classList.contains('cell')) {
+      e.target.style.backgroundColor = currentColor + "";
     }
   }
 }
@@ -28,7 +29,13 @@ function drawRainbow(e) {
   if (mouseDown) {
     if (e.target.className === 'cell' & e.target.className !== 'filled') {
       e.target.style.backgroundColor = getRandomColor();
-      e.target.className = 'filled';
+      e.target.classList.add('filled');
+      e.target.setAttribute('color-brightness', '100');
+    } else if (e.target.classList.contains('filled')) {
+      let currentBrightness = e.target.getAttribute('color-brightness');
+      currentBrightness -= 10;
+      e.target.setAttribute('color-brightness', currentBrightness);
+      e.target.style.filter = "brightness(" + currentBrightness + "%)";
     }
   }
 }
@@ -47,7 +54,7 @@ function generateGrid() {
     createDiv.style.height = contSize / size + 'vw';
     createDiv.className = 'cell';
     container.appendChild(createDiv);
-    document.getElementById('currentSize').innerHTML = "Current size is: " + size;
+    document.getElementById('currentSize').innerHTML = "Current size is: " + size + "x" + size;
   }
 }
 
@@ -76,13 +83,28 @@ function changeSize() {
   }
 }
 
+function switchToRainbow() {
+  document.removeEventListener('mouseover', drawBlack);
+  document.addEventListener('mouseover', drawRainbow);
+  drawingMethod = drawRainbow;
+}
 
+function switchToBlack() {
+  currentColor = 'black';
+  document.removeEventListener('mouseover', drawRainbow);
+  document.addEventListener('mouseover', drawBlack);
+  drawingMethod = drawBlack;
+}
 
-document.addEventListener('mouseover', drawRainbow);
+colorPick.addEventListener('input', () => {
+  switchToBlack();
+  currentColor = colorPick.value;
+})
+document.addEventListener('mouseover', drawBlack);
 
 window.addEventListener('mousedown', (e) => {
   mouseDown = true;
-  drawBlack(e);
+  drawingMethod(e);
 })
 window.addEventListener('mouseup', () => {
   mouseDown = false;

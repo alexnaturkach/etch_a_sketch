@@ -11,7 +11,11 @@
 
 <body>
   <div style='text-align: center; margin: 20px 0;'>
-    <button type="button" name="clear" onclick='resetGrid()'>Clear</button>
+    <p>Filler: <button type="button" name="rainbow" onclick='switchToRainbow()'>Rainbow Style</button>
+      <button type="button" name="black" onclick='switchToBlack()'>Black pen</button>
+      <span>Pick a Color: </span><input type="color" name="pickcolor" value="#ff0000" id="colorPicker"></input>
+    </p>
+    <button type=" button" name="clear" onclick='resetGrid()'>Clear</button>
     <button type="button" name="button" onclick='changeSize()'>Resize</button>
     <p id='currentSize' style='display: inline; margin-left: 15px;'></p>
   </div>
